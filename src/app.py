@@ -27,10 +27,9 @@ class App:
 
         # Result Label
         self.result_label = ttk.Label(master, text="")
-        self.result_label.grid(row=3, column=0, columnspan=2, pady=10)
+        self.result_label.grid(row=4, column=0, columnspan=2)
 
     def start_simulation(self):
-        # Retrieve user inputs
         try:
             cache_size = int(self.cache_size_entry.get())
             block_size = int(self.block_size_entry.get())
@@ -44,8 +43,10 @@ class App:
             ]
             results = self.cache_simulator.run_simulation(memory_access_sequence)
 
-            # Display simulation results
+            # Display simulation results in the GUI
             result_text = (
+                f"Memory Access Sequence: {memory_access_sequence}\n"
+                f"Number of Memory Blocks (n): {cache_size // 2}\n"
                 f"Cache Hits: {results['hits']}\n"
                 f"Cache Misses: {results['misses']}\n"
                 f"Cache Hit Rate: {results['cache_hit_rate']:.2%}\n"
@@ -54,6 +55,7 @@ class App:
                 f"Total Memory Access Time: {results['total_memory_access_time']:.2f}"
             )
 
+            # Update the label with the simulation results
             self.result_label.config(text=result_text)
 
         except ValueError as e:
