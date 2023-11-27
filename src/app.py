@@ -1,6 +1,7 @@
+import random
 import tkinter as tk
 from tkinter import ttk
-from src.cache_simulation import CacheSimulator  # Adjust import path
+from src.cache_simulation import CacheSimulator
 
 class App:
     def __init__(self, master):
@@ -24,21 +25,42 @@ class App:
         # Create an instance of CacheSimulator
         self.cache_simulator = None
 
+        # Result Label
+        self.result_label = ttk.Label(master, text="")
+        self.result_label.grid(row=3, column=0, columnspan=2, pady=10)
+
     def start_simulation(self):
-        # Retrieve user inputs
-        cache_size = int(self.cache_size_entry.get())
-        block_size = int(self.block_size_entry.get())
+        try:
+            # Retrieve user inputs
+            cache_size = int(self.cache_size_entry.get())
+            block_size = int(self.block_size_entry.get())
 
-        # Create an instance of CacheSimulator
-        self.cache_simulator = CacheSimulator(cache_size, block_size)
+            # Validate input values
+            if cache_size <= 0 or block_size <= 0 or block_size >= cache_size:
+                raise ValueError("Invalid input values. Cache size and block size should be positive, and block size should be less than cache size.")
 
-        # Run the simulation with a sample memory access sequence (modify as needed)
-        memory_access_sequence = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        results = self.cache_simulator.run_simulation(memory_access_sequence)
+            # Create an instance of CacheSimulator
+            self.cache_simulator = CacheSimulator(cache_size, block_size)
 
-        # Display simulation results
-        result_label = ttk.Label(self.master, text=f"Cache Hits: {results['hits']}, Cache Misses: {results['misses']}")
-        result_label.grid(row=3, column=0, columnspan=2, pady=10)
+            # Run the simulation with a random memory access sequence
+            memory_access_sequence = [random.randint(0, 2 * (cache_size // 2) - 1) for _ in range(4 * (cache_size // 2))]
+            results = self.cache_simulator.run_simulation(memory_access_sequence)
+
+            # Display simulation results
+            result_text = (
+                f"Cache Hits: {results['hits']}\n"
+                f"Cache Misses: {results['misses']}\n"
+                f"Cache Hit Rate: {results['cache_hit_rate']:.2%}\n"
+                f"Cache Miss Rate: {results['cache_miss_rate']:.2%}\n"
+                f"Average Memory Access Time: {results['average_memory_access_time']:.2f}\n"
+                f"Total Memory Access Time: {results['total_memory_access_time']:.2f}"
+            )
+
+            self.result_label.config(text=result_text)
+
+        except ValueError as e:
+            # Handle the ValueError (e.g., show an error message)
+            self.result_label.config(text=str(e))
 
 if __name__ == "__main__":
     root = tk.Tk()
