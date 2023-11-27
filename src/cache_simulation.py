@@ -7,7 +7,7 @@ class CacheSimulator:
         self.cache_line_size = 64
 
         # Calculate the number of cache blocks and sets
-        self.num_blocks = cache_size // block_size
+        self.num_blocks = max(1, cache_size // block_size)  # Ensure num_blocks is at least 1
         self.num_sets = self.num_blocks // 4  # 4-way set-associative
 
         # Calculate the number of words per block based on the cache line size
