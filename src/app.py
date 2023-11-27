@@ -30,20 +30,18 @@ class App:
         self.result_label.grid(row=3, column=0, columnspan=2, pady=10)
 
     def start_simulation(self):
+        # Retrieve user inputs
         try:
-            # Retrieve user inputs
             cache_size = int(self.cache_size_entry.get())
             block_size = int(self.block_size_entry.get())
 
-            # Validate input values
-            if cache_size <= 0 or block_size <= 0 or block_size >= cache_size:
-                raise ValueError("Invalid input values. Cache size and block size should be positive, and block size should be less than cache size.")
-
             # Create an instance of CacheSimulator
-            self.cache_simulator = CacheSimulator(cache_size, block_size)
+            self.cache_simulator = CacheSimulator()
 
             # Run the simulation with a random memory access sequence
-            memory_access_sequence = [random.randint(0, 2 * (cache_size // 2) - 1) for _ in range(4 * (cache_size // 2))]
+            memory_access_sequence = [
+                random.randint(0, 2 * (cache_size // 2) - 1) for _ in range(4 * (cache_size // 2))
+            ]
             results = self.cache_simulator.run_simulation(memory_access_sequence)
 
             # Display simulation results
