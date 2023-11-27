@@ -1,5 +1,8 @@
 class CacheSimulator:
     def __init__(self, cache_size, block_size):
+        if block_size >= cache_size:
+          raise ValueError("Block size should be less than cache size.")
+      
         self.cache_size = cache_size
         self.block_size = block_size
 
@@ -7,8 +10,9 @@ class CacheSimulator:
         self.cache_line_size = 64
 
         # Calculate the number of cache blocks and sets
-        self.num_blocks = max(1, cache_size // block_size)  # Ensure num_blocks is at least 1
-        self.num_sets = self.num_blocks // 4  # 4-way set-associative
+        self.num_blocks = cache_size // block_size
+        self.num_sets = max(1, self.num_blocks // 4)
+        print(f"num_blocks: {self.num_blocks}, num_sets: {self.num_sets}")
 
         # Calculate the number of words per block based on the cache line size
         self.num_words_per_block = block_size // self.cache_line_size
@@ -26,8 +30,9 @@ class CacheSimulator:
 
         for address in memory_access_sequence:
             block_address, offset = divmod(address, self.block_size)
-            set_index = (block_address // 4) % self.num_sets
-            tag = block_address // self.num_sets
+            set_index = (block_address // self.block_size) % self.num_sets
+            print(f"block_address: {block_address}, num_sets: {self.num_sets}, set_index: {set_index}")
+            tag = block_address // self.num_blocks
 
             # Check each line in the set for a hit
             hit = False
