@@ -55,8 +55,8 @@ The specific patterns are defined based on the values of n(memory block size) an
 
 - Random Sequence:
   The miss rate is always higher than the hit rate
-  Slowest memory access time
+  || Slowest memory access time
 
 - Mid-Repeat Blocks:
   The hit rate is higher than the miss rate
-  Fastest memory access time
+  || Fastest memory access time
