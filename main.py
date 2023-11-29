@@ -61,7 +61,7 @@ class CacheSimulator:
     def get_cache_memory_snapshot(self, step, current_block):
         snapshot = f"Step: {step}, Current Cache Memory:\n"
         if current_block is not None:
-            snapshot += f"Block {current_block} {'miss' if 'X' in self.cache_memory[current_block % self.num_cache_blocks]['blocks'] else 'hit'}\n"
+            snapshot += f"Block {current_block}\n"
         snapshot += "---------------------\n"
         snapshot += "| Cache Index | Data |\n"
         snapshot += "---------------------\n"
