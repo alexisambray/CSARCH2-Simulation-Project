@@ -9,15 +9,10 @@ class App:
         self.master.title("Cache Simulator")
 
         # GUI components
-        self.cache_size_label = ttk.Label(master, text="Cache Size:")
-        self.cache_size_entry = ttk.Entry(master)
-        self.cache_size_label.grid(row=0, column=0, sticky="e")
-        self.cache_size_entry.grid(row=0, column=1)
-
-        self.block_size_label = ttk.Label(master, text="Block Size:")
-        self.block_size_entry = ttk.Entry(master)
-        self.block_size_label.grid(row=1, column=0, sticky="e")
-        self.block_size_entry.grid(row=1, column=1)
+        self.memory_block_label = ttk.Label(master, text="Number of Memory Block:")
+        self.memory_block_entry = ttk.Entry(master)
+        self.memory_block_label.grid(row=0, column=0, sticky="e")
+        self.memory_block_entry.grid(row=0, column=1)
 
         # Radio buttons for output options
         self.output_option = tk.StringVar(value="final_snapshot")
@@ -28,48 +23,60 @@ class App:
         self.step_by_step_radio = ttk.Radiobutton(master, text="Step-by-Step Animated Tracing", variable=self.output_option, value="step_by_step")
         self.step_by_step_radio.grid(row=3, column=1, sticky="w")
 
+        self.testcase_option = tk.StringVar(value="random")
+        self.testcase_option_label = ttk.Label(master, text="Test case Option:")
+        self.testcase_option_label.grid(row=4, column=0, sticky="e")
+        self.random_radio = ttk.Radiobutton(master, text="Random Sequence", variable=self.testcase_option, value="random")
+        self.random_radio.grid(row=4, column=1, sticky="w")
+        self.mid_repeat = ttk.Radiobutton(master, text="Mid-Repeat-Sequence", variable=self.testcase_option, value="mid_repeat")
+        self.mid_repeat.grid(row=5, column=1, sticky="w")
+        self.sequenceial = ttk.Radiobutton(master, text="Sequential Sequence", variable=self.testcase_option, value="sequential")
+        self.sequenceial.grid(row=6, column=1, sticky="w")
+        
+
+      
+
         self.start_button = ttk.Button(master, text="Start Simulation", command=self.start_simulation)
-        self.start_button.grid(row=4, column=0, columnspan=2, pady=10)
+        self.start_button.grid(row=7, column=0, columnspan=2, pady=10)
 
         # Create an instance of CacheSimulator
         self.cache_simulator = None
 
         # Result Label
         self.result_label = ttk.Label(master, text="", wraplength=400)  # Adjust wraplength as needed
-        self.result_label.grid(row=5, column=0, columnspan=2, pady=10)
+        self.result_label.grid(row=8, column=0, columnspan=2, pady=10)
 
     def start_simulation(self):
         try:
-            cache_size = int(self.cache_size_entry.get())
-            block_size = int(self.block_size_entry.get())
+            memory_block = int(self.memory_block_entry.get())
+           
 
             # Create an instance of CacheSimulator
             self.cache_simulator = CacheSimulator()
 
             # Run the simulation with the specified memory access sequence
-            memory_access_sequence = self.generate_memory_access_sequence(test_case='random')
-            output_option = 'final_snapshot'  # Change this to 'step_by_step' if needed
-            simulation_result = self.cache_simulator.run_simulation(memory_access_sequence, output_option=output_option)
+            testcase_data = self.testcase_option.get()
+            memory_access_sequence = self.generate_memory_access_sequence(n=memory_block,test_case=testcase_data)
+            
+            output_option_data = self.output_option.get()
+            simulation_result = self.cache_simulator.run_simulation(memory_access_sequence, output_option=output_option_data)
 
             # Display simulation results in the GUI
             result_text = (
-                f"Memory Access Sequence: {memory_access_sequence}\n"
-                f"Number of Memory Blocks (n): {cache_size // 2}\n"
-                f"Cache Hits: {simulation_result['hits']}\n"
-                f"Cache Misses: {simulation_result['misses']}\n"
+                f"Memory Access Count: {len(memory_access_sequence)}\n"
+                f"Cache Hit count: {simulation_result['hits']}\n"
+                f"Cache Miss count: {simulation_result['misses']}\n"
                 f"Cache Hit Rate: {simulation_result['cache_hit_rate']:.2%}\n"
                 f"Cache Miss Rate: {simulation_result['cache_miss_rate']:.2%}\n"
                 f"Average Memory Access Time: {simulation_result['average_memory_access_time']:.2f}\n"
-                f"Total Memory Access Time: {simulation_result['total_memory_access_time']:.2f}"
+                f"Total Memory Access Time: {simulation_result['total_memory_access_time']:.2f}\n"
             )
 
             # Update the label with the simulation results
             self.result_label.config(text=result_text)
 
-            # Display the final memory snapshot if available
             memory_trace = simulation_result.get('memory_trace')
-            if memory_trace is not None and output_option == 'final_snapshot':
-                self.display_final_memory_snapshot(memory_trace)
+            self.display_final_memory_snapshot(memory_trace)
 
         except ValueError as e:
             # Handle the ValueError (e.g., show an error message)
@@ -93,19 +100,34 @@ class App:
 
         # Make the text widget read-only
         text_widget.config(state=tk.DISABLED)
+    def sequential_sequence(self, n):
+        sequence = list(range(2 * n))
+        repeated_sequence = sequence * 4
+        return repeated_sequence
 
-    def generate_memory_access_sequence(self, test_case='random'):
+    def random_sequence(self, n):
+        sequence = list(range(4 * n))
+        random.shuffle(sequence)
+        return sequence
+
+
+    def mid_repeat_blocks(self, n):
+        middle_sequence = list(range(n))
+        full_sequence = middle_sequence + list(range(n, 2 * n))
+        repeated_sequence = full_sequence * 4
+        return repeated_sequence
+
+    def generate_memory_access_sequence(self,n=32,test_case='random'):
+        
         if test_case == 'random':
-            # Generate a random memory access sequence
-            # This is just a placeholder; you may want to replace it with your own logic
-            return [random.randint(0, 1023) for _ in range(100)]
+          
+            return self.random_sequence(n)
+        elif test_case == 'mid_repeat':
+          
+            return self.mid_repeat_blocks(n)
         else:
-            # Implement other test cases as needed
-            pass
+            return self.sequential_sequence(n)
 
-    def show_step_by_step_memory_trace(self, memory_trace):
-        # Implement the logic to display the memory trace step by step
-        pass
 
 if __name__ == "__main__":
     root = tk.Tk()
