@@ -51,12 +51,12 @@ The specific patterns are defined based on the values of n(memory block size) an
 ### Key Takeaways:
 
 - Sequential Sequence:
-  ++ The hit rate is always higher than the miss rate
+  The hit rate is always higher than the miss rate
 
 - Random Sequence:
-  ++ The miss rate is always higher than the hit rate
-  ++ Slowest memory access time
+  The miss rate is always higher than the hit rate
+  Slowest memory access time
 
 - Mid-Repeat Blocks:
-  ++ The hit rate is higher than the miss rate
-  ++ Fastest memory access time
+  The hit rate is higher than the miss rate
+  Fastest memory access time
