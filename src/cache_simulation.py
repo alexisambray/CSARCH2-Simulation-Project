@@ -23,7 +23,7 @@ class CacheSimulator:
         # LRU counters for each set
         self.lru_counters = [[0] * 4 for _ in range(self.num_sets)]
 
-        # Variables to store the cache memory trace
+        # Variables to store cache memory trace
         self.cache_memory_trace = []
 
         # Variables to store simulation results
