@@ -38,11 +38,12 @@ The specific patterns are defined based on the values of n(memory block size) an
 
 - Description: In this test case, sequentially accessing cache blocks up to 2n.
   The sequence is repeated four times.
+- Example: 0,1,2,3,...,2n-1 {repeated 4x}
 
 ##### Random Sequence:
 
 - Description: This test case involves accessing a sequence of 4n cache blocks randomly.
-  Example: If n is 4, the sequence could be something like 7, 2, 14, 0, ..., (random order)
+- Example: If n is 4, the sequence could be something like 7, 2, 14, 0, ..., (random order)
 
 ##### Mid-Repeat Blocks:
 
@@ -52,6 +53,7 @@ The specific patterns are defined based on the values of n(memory block size) an
 
 - Sequential Sequence:
   The hit rate is always higher than the miss rate
+  This test case simulates accessing cache blocks sequentially. The high hit rate suggests that sequential access patterns are favorable for caching. The cache is effective in capturing subsequent blocks, resulting in a lower miss rate.
 
 - Random Sequence:
   The miss rate is always higher than the hit rate
